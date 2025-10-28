@@ -8,18 +8,20 @@ namespace Pizzalizya.Domain.Entities
         public string NomeItem { get; private set; }
         public TipoItem TipoItem { get; private set; }
         public decimal ValorUnitario { get; private set; }
-
-        public Item()
-        { }
-
-        public static Item Criar(string nomeItem, TipoItem tipoItem, decimal valorUnitario)
+        public Pedido Pedido { get; private set; }
+        private Item(Guid idEmpresa, Guid idUsuario) : base(idEmpresa, idUsuario) { }
+        private Item (Guid idEmpresa, Guid idUsuario, string nomeItem, TipoItem tipoItem, decimal valorUnitario, Pedido pedido) : base(idEmpresa, idUsuario)
         {
-            return new Item
-            {
-                NomeItem = nomeItem,
-                TipoItem = tipoItem,
-                ValorUnitario = valorUnitario
-            };
+            NomeItem = nomeItem;
+            TipoItem = tipoItem;
+            ValorUnitario = valorUnitario;
+            Pedido = pedido;
+        }
+
+        public static Item Criar(Guid idEmpresa, Guid idUsuario, string nomeItem, TipoItem tipoItem, decimal valorUnitario, Pedido pedido)
+        {
+            return new Item(idEmpresa, idUsuario, nomeItem, tipoItem, valorUnitario, pedido); 
+
         }
     }
 }

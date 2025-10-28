@@ -11,9 +11,12 @@ namespace Pizzalizya.Data.Configurations
             builder.HasKey(e => e.Id);
 
             builder.HasMany(p => p.ItensPedido)
-                   .WithOne()
-                   .HasForeignKey(i => i.IdPai)
-                   .OnDelete(DeleteBehavior.Cascade);
+                   .WithOne(p => p.Pedido)
+                   .HasForeignKey(i => i.IdPai);
+
+            builder.HasOne(c => c.Cliente)
+                .WithOne(p => p.Pedido)
+                .HasForeignKey<Cliente>(p => p.IdPai);
         }
     }
 }

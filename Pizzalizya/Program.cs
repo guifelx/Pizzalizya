@@ -9,7 +9,7 @@ builder.Services.AddDbContext<PizzalizyaContext>(options =>
     options.UseSqlServer(builder.Configuration.GetConnectionString("ConexaoPadrao")));
 
 builder.Services.AddProjectDependencies();
-
+builder.Services.AddEndpointsApiExplorer();
 // Add services to the container.
 
 builder.Services.AddControllers();
@@ -21,14 +21,8 @@ var app = builder.Build();
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
 {
+    app.MapOpenApi();
     app.MapScalarApiReference();
-    app.MapOpenApi();
-}
-
-// Configure the HTTP request pipeline.
-if (app.Environment.IsDevelopment())
-{
-    app.MapOpenApi();
 }
 
 app.UseHttpsRedirection();

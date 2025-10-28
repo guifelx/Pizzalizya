@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Azure.Core;
+using Microsoft.AspNetCore.Mvc;
 using Pizzalizya.Dto.Requests.Pedidos;
 using Pizzalizya.Services.Interfaces;
 using System.Threading.Tasks;
@@ -7,13 +8,13 @@ using System.Threading.Tasks;
 
 namespace Pizzalizya.Controllers
 {
-    [Route("api/[controller]")]
+    [Route("api/v1/[controller]")]
     [ApiController]
     public class PedidoController : ControllerBase
     {
-        private IPedidoService _pedidoService;
+        public IPedidoService _pedidoService;
 
-        private PedidoController(IPedidoService pedidoService)
+        public PedidoController(IPedidoService pedidoService)
         {
             _pedidoService = pedidoService;
         }
@@ -26,15 +27,17 @@ namespace Pizzalizya.Controllers
         }
 
         // GET api/<PedidoController>/5
-        [HttpGet("{id}")]
-        public string Get(int id)
+        [HttpGet("{idEmpresa}")]
+        public async Task<IActionResult> ObterPedidos([FromRoute] Guid idEmpresa)
         {
-            return "value";
+            var result = await _pedidoService.ObterPedidos(idEmpresa);
+
+            return Ok(result); 
         }
 
         // POST api/<PedidoController>
         [HttpPost]
-        public async Task<IActionResult> Post([FromBody] AdicionarPedidoRequest request)
+        public async Task<IActionResult> CriarPedido([FromBody] AdicionarPedidoRequest request)
         {
             await _pedidoService.CriarPedidoAsync(request); 
 

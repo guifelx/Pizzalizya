@@ -9,9 +9,9 @@ namespace Pizzalizya.Services
 {
     public class PedidoService : IPedidoService
     {
-        IPedidoRepository _pedidoRepository; 
+        public IPedidoRepository _pedidoRepository;
 
-        private PedidoService(IPedidoRepository pedidoRepository)
+        public PedidoService(IPedidoRepository pedidoRepository)
         {
             _pedidoRepository = pedidoRepository; 
         }
@@ -24,7 +24,8 @@ namespace Pizzalizya.Services
                                             request.Cliente, 
                                             request.ItensPedido, 
                                             request.ValorPedido, 
-                                            request.MetodoPagamento); 
+                                            request.MetodoPagamento,
+                                            request.Delivery); 
 
             var result = await _pedidoRepository.CriarPedidoAsync(pedido); 
 
@@ -32,6 +33,16 @@ namespace Pizzalizya.Services
                 return false;
 
             return true;
+        }
+
+        public async Task<IEnumerable<PedidoDto>> ObterPedidos(Guid idEmpresa)
+        {
+            var pedidos = await _pedidoRepository.ObterPedidos(idEmpresa);
+
+            if (pedidos.Count() == 0)
+                return new List<PedidoDto>();
+
+            return pedidos;
         }
     }
 }

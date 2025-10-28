@@ -15,11 +15,12 @@ namespace Pizzalizya.Domain.Entities
         public bool Delivery { get; private set; }
 
         private Pedido() { }
-        private Pedido(Guid idEmpresa, Guid idUsuario, DateTime dataPedido, decimal valorPedido, TipoPagamento tipoPagamento) : base(idEmpresa, idUsuario)
+        protected Pedido(Guid idEmpresa, Guid idUsuario, DateTime dataPedido, decimal valorPedido, TipoPagamento tipoPagamento, bool delivery) : base(idEmpresa, idUsuario)
         {
             this.DataPedido = dataPedido;
             this.ValorPedido = valorPedido;
             this.MetodoPagamento = tipoPagamento;
+            this.Delivery = delivery;
         }
 
         public static Pedido Criar(
@@ -29,9 +30,10 @@ namespace Pizzalizya.Domain.Entities
             ClienteDto cliente,
             IEnumerable<ItemDto> itens,
             decimal valorPedido,
-            TipoPagamento tipoPagamento)
+            TipoPagamento tipoPagamento, 
+            bool delivery)
         {
-            var pedido = new Pedido(idEmpresa, idUsuario, dataPedido, valorPedido, tipoPagamento);
+            var pedido = new Pedido(idEmpresa, idUsuario, dataPedido, valorPedido, tipoPagamento, delivery);
 
             foreach (var item in itens)
                 pedido.AdicionarItens(item);
@@ -50,9 +52,12 @@ namespace Pizzalizya.Domain.Entities
                 this.ItensPedido = new List<Item>();
 
             this.ItensPedido.Add(Item.Criar(
+                IdEmpresa,
+                IdUsuario,
                 item.NomeItem,
                 item.TipoItem,
-                item.ValorUnitario));
+                item.ValorUnitario,
+                this));
         }
 
         private void AdicionarCliente(ClienteDto cliente)
@@ -60,7 +65,7 @@ namespace Pizzalizya.Domain.Entities
             if (cliente is null)
                 return;
 
-            this.Cliente = Cliente.Criar(cliente.Nome, cliente.Cpf); 
+            this.Cliente = Cliente.Criar(IdEmpresa, IdUsuario, cliente.Nome, cliente.Cpf, this);
         }
     }
 }

@@ -13,6 +13,12 @@ namespace Pizzalizya.Data
         public DbSet<Pedido> Pedidos { get; set; }
         public DbSet<Item> Itens { get; set; }
         public DbSet<Cliente> Clientes { get; set; }
+
+        protected override void OnModelCreating(ModelBuilder modelBuilder)
+        {
+            modelBuilder.ApplyConfigurationsFromAssembly(typeof(PizzalizyaContext).Assembly);
+            base.OnModelCreating(modelBuilder);
+        }
     }
 }
 
