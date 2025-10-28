@@ -1,0 +1,6 @@
+@Pizzalizya_HostAddress = http://localhost:5096
+
+GET {{Pizzalizya_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###
