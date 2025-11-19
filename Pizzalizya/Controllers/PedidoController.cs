@@ -19,15 +19,8 @@ namespace Pizzalizya.Controllers
             _pedidoService = pedidoService;
         }
 
-        // GET: api/<PedidoController>
-        [HttpGet]
-        public IEnumerable<string> Get()
-        {
-            return new string[] { "value1", "value2" };
-        }
 
-        // GET api/<PedidoController>/5
-        [HttpGet("{idEmpresa}")]
+        [HttpGet("obter-pedidos/{idEmpresa}")]
         public async Task<IActionResult> ObterPedidos([FromRoute] Guid idEmpresa)
         {
             var result = await _pedidoService.ObterPedidos(idEmpresa);
@@ -35,7 +28,17 @@ namespace Pizzalizya.Controllers
             return Ok(result); 
         }
 
-        // POST api/<PedidoController>
+        [HttpGet("obter-pedido/{idExternoPedido}")]
+        public async Task<IActionResult> ObterPedido([FromRoute] Guid idExternoPedido)
+        {
+            var result = await _pedidoService.ObterPedido(idExternoPedido);
+
+            if (result is null)
+                return NotFound("Pedido não encotnrado.");
+
+            return Ok(result); 
+        }
+
         [HttpPost]
         public async Task<IActionResult> CriarPedido([FromBody] AdicionarPedidoRequest request)
         {
@@ -44,16 +47,23 @@ namespace Pizzalizya.Controllers
             return Ok(); 
         }
 
-        // PUT api/<PedidoController>/5
-        [HttpPut("{id}")]
-        public void Put(int id, [FromBody] string value)
+        [HttpPut]
+        public async Task<IActionResult> AlterarPedido(PedidoAlteradoRequest pedido)
         {
+            await _pedidoService.AlterarPedidoAsync(pedido); 
+
+            return Ok();    
         }
 
-        // DELETE api/<PedidoController>/5
-        [HttpDelete("{id}")]
-        public void Delete(int id)
+        [HttpDelete("excluir-pedido/{idPedido}")]
+        public async Task<IActionResult> Delete(Guid idPedido)
         {
+            var excluido = await _pedidoService.ExcluirPedido(idPedido);
+
+            if (!excluido)
+                return NotFound("Não foi possível excluir o pedido")
+;
+            return Ok(); 
         }
     }
 }

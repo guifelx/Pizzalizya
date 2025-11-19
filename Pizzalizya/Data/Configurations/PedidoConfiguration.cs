@@ -17,6 +17,10 @@ namespace Pizzalizya.Data.Configurations
             builder.HasOne(c => c.Cliente)
                 .WithOne(p => p.Pedido)
                 .HasForeignKey<Cliente>(p => p.IdPai);
+
+            builder.HasOne(c => c.Endereco)
+                .WithOne(p => p.Pedido)
+                .HasForeignKey<Endereco>(p => p.IdPai);
         }
     }
 }

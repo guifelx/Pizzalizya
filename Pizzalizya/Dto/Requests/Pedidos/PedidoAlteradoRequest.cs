@@ -1,10 +1,10 @@
-﻿using Pizzalizya.Domain.Entities;
-using Pizzalizya.Domain.Enums;
+﻿using Pizzalizya.Domain.Enums;
 
 namespace Pizzalizya.Dto.Requests.Pedidos
 {
-    public class AdicionarPedidoRequest
+    public class PedidoAlteradoRequest
     {
+        public Guid IdExterno { get; set; }
         public Guid IdEmpresa { get; set; }
         public Guid IdUsuario { get; set; }
         public DateTime DataPedido { get; set; }

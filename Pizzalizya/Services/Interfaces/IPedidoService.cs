@@ -8,5 +8,8 @@ namespace Pizzalizya.Services.Interfaces
     {
         Task<bool> CriarPedidoAsync(AdicionarPedidoRequest pedido);
         Task<IEnumerable<PedidoDto>> ObterPedidos(Guid idEmpresa);
+        Task<PedidoDto> ObterPedido(Guid idPedido);
+        Task<bool> ExcluirPedido(Guid idPedido);
+        Task<bool> AlterarPedidoAsync(PedidoAlteradoRequest idPedido);
     }
 }

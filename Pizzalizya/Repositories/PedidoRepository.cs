@@ -25,12 +25,51 @@ namespace Pizzalizya.Repositories
             return await _context.SaveChangesAsync() > 0;
         }
 
+        public async Task<PedidoDto> ObterPedido(Guid idPedido)
+        {
+            var pedido = await _context.Pedidos.AsNoTracking().AsSplitQuery().Where(x => x.IdExterno == idPedido).Include(p => p.Cliente).Include(p => p.ItensPedido)
+                .Select(p => new PedidoDto
+                {
+                    IdExterno = p.IdExterno,
+                    DataPedido = p.DataPedido,
+                    Cliente = new ClienteDto
+                    {
+                        IdExterno = p.Cliente.IdExterno,
+                        Nome = p.Cliente.Nome,
+                        Cpf = p.Cliente.Cpf
+                    },
+                    ValorPedido = p.ValorPedido,
+                    MetodoPagamento = p.MetodoPagamento,
+                    ItensPedido = p.ItensPedido
+                        .Select(i => new ItemDto
+                        {
+                            IdExterno = i.IdExterno,
+                            NomeItem = i.NomeItem,
+                            TipoItem = i.TipoItem,
+                            ValorUnitario = i.ValorUnitario
+                        })
+                        .ToList(),
+                    Delivery = p.Delivery,
+                })
+                .FirstOrDefaultAsync();
+
+            return pedido;
+        }
+
+
+        public async Task<Pedido> ObterPedidoInterno(Guid idPedido)
+        {
+            var pedidoInterno = await _context.Pedidos.Where(x => x.IdExterno == idPedido).FirstOrDefaultAsync();
+
+            return pedidoInterno;
+        }
+
         public async Task<IEnumerable<PedidoDto>> ObterPedidos(Guid idEmpresa)
         {
             if (idEmpresa == Guid.Empty)
                 return new List<PedidoDto>();
 
-            var pedidos = await _context.Pedidos.Where(p => p.IdEmpresa == idEmpresa).Include(p => p.Cliente).Include(p => p.ItensPedido)
+            var pedidos = await _context.Pedidos.AsNoTracking().AsSplitQuery().Where(p => p.IdEmpresa == idEmpresa).Include(p => p.Cliente).Include(p => p.ItensPedido)
                 .Select(p => new PedidoDto
                 {
                     IdExterno = p.IdExterno,
@@ -54,8 +93,18 @@ namespace Pizzalizya.Repositories
                 }).ToListAsync();
 
             return pedidos;
+        }
 
+        public async Task<bool> ExcluirPedido(Guid idPedido)
+        {
+            var pedido = await _context.Pedidos.Where(x => x.IdExterno == idPedido).FirstOrDefaultAsync(); 
 
+            if (pedido == null)
+                return false;
+
+            _context.Pedidos.Remove(pedido);
+            
+            return await _context.SaveChangesAsync() > 0;
         }
     }
 }
